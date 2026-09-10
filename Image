@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>生成 Nexitally 核心指南图片</title>
+  <style>
+    body {
+      background: #0b0f19;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 25px;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="downloadPNG()">📥 点击下载超清 PNG 图片 (nexitally-guide.png)</button>
+  <canvas id="myCanvas" width="1600" height="900"></canvas>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 绘制圆角矩形辅助函数
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    // 1. 全局深蓝黑背景
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, 1600, 900);
+
+    // 2. 顶部主标题与副标题
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 44px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('Nexitally (奶昔) 核心优势与选购指南', 800, 95);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '500 24px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('纯 IPLC 专线  ·  不限设备并发  ·  全球流媒体 & AI 深度优化', 800, 142);
+
+    // 卡片通用参数
+    const cardW = 710;
+    const cardH = 310;
+    const radius = 22;
+
+    function drawCard(x, y, strokeColor, fillColor, icon, title, titleColor, items) {
+      // 绘制背景与外边框
+      roundRect(ctx, x, y, cardW, cardH, radius);
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = strokeColor;
+      ctx.stroke();
+
+      // 卡片标题
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 30px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = titleColor;
+      ctx.fillText(icon + '  ' + title, x + 42, y + 68);
+
+      // 内容列表
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '400 23px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif';
+      let textY = y + 130;
+      items.forEach(item => {
+        ctx.fillText('•  ' + item, x + 42, textY);
+        textY += 50;
+      });
+    }
+
+    // 卡片 1: 纯 IPLC 内网专线
+    drawCard(
+      60, 200, 
+      '#1d4ed8', 'rgba(30, 58, 138, 0.22)', 
+      '⚡', '纯 IPLC 内网专线', '#60a5fa',
+      [
+        '沪美 / 深港 / 沪日等纯内网专线',
+        '全节点 1x 倍率扣费，晚高峰不限速',
+        '物理内网直连，无视网络高峰波动'
+      ]
+    );
+
+    // 卡片 2: 不限制在线设备数
+    drawCard(
+      830, 200, 
+      '#047857', 'rgba(6, 78, 59, 0.22)', 
+      '📱', '不限制在线设备数', '#34d399',
+      [
+        '全套餐不限制同时在线设备数量',
+        '手机、电脑、软路由、电视全共享',
+        '单账号满足全家或团队多人合租需求'
+      ]
+    );
+
+    // 卡片 3: 流媒体 & AI 深度解锁
+    drawCard(
+      60, 545, 
+      '#6d28d9', 'rgba(76, 29, 149, 0.22)', 
+      '🎬', '流媒体 & AI 深度解锁', '#a78bfa',
+      [
+        '4K/8K 秒开 (Netflix, Disney+, YouTube)',
+        '针对 ChatGPT / Claude 通信专线优化',
+        '原生 IP 节点支持 TikTok 直播与运营'
+      ]
+    );
+
+    // 卡片 4: 选购与使用实战建议
+    drawCard(
+      830, 545, 
+      '#b45309', 'rgba(120, 53, 15, 0.22)', 
+      '💡', '选购与使用实战建议', '#fbbf24',
+      [
+        '新人起步：建议先购 VIP 1 / VIP 2 月付体验',
+        '进阶省钱：满意后选年付折合省 20%~40%',
+        '跨境运营：建议选择独立家宽 / 独享 IP'
+      ]
+    );
+
+    function downloadPNG() {
+      const link = document.createElement('a');
+      link.download = 'nexitally-guide.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
